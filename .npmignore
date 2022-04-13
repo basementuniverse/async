@@ -1,0 +1,6 @@
+/test
+.editorconfig
+.gitignore
+index.ts
+tsconfig.jest.json
+tsconfig.json
