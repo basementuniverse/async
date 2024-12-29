@@ -1,3 +1,7 @@
+**@basementuniverse/async**
+
+***
+
 # Async
 
 Async versions of common list functions.
@@ -10,7 +14,7 @@ npm install @basementuniverse/async
 
 ## Usage
 
-See [docs](docs/globals.md) for more information.
+See [docs](docs/modules.md) for more information.
 
 ### asyncForEach
 
