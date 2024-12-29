@@ -14,3 +14,11 @@ export declare const asyncFilter: <T = any>(array: T[], predicate: (value: T, in
  * Async version of `Array.reduce`
  */
 export declare const asyncReduce: <TIn = any, TOut = any>(array: TIn[], reducer: (previous: TOut, current: TIn, index?: number | undefined, array?: TIn[] | undefined) => Promise<TOut>, initial: TOut) => Promise<TOut>;
+/**
+ * Async version of `Array.find`
+ */
+export declare const asyncFind: <T = any>(array: T[], predicate: (value: T, index?: number | undefined, array?: T[] | undefined) => Promise<boolean>) => Promise<T | undefined>;
+/**
+ * Async version of `Array.findIndex`
+ */
+export declare const asyncFindIndex: <T = any>(array: T[], predicate: (value: T, index?: number | undefined, array?: T[] | undefined) => Promise<boolean>) => Promise<number>;

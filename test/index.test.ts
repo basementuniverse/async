@@ -3,6 +3,8 @@ import {
   asyncMap,
   asyncFilter,
   asyncReduce,
+  asyncFind,
+  asyncFindIndex,
 } from '../index';
 
 async function sleep(ms: number): Promise<void> {
@@ -54,7 +56,7 @@ describe('asyncForEach', () => {
         await sleep(element.sleepTime);
         output.push(element.value);
       };
-    
+
     // Sanity check: iterate through the list in parallel first...
     await Promise.all(testInput.map(createTestPredicate(parallelTestOutput)));
 
@@ -73,7 +75,7 @@ describe('asyncForEach', () => {
     type TestElement = {
       sleepTime: number;
     };
-    
+
     const testArray: TestElement[] = [
       { sleepTime: 10 },
       { sleepTime: 20 },
@@ -85,7 +87,7 @@ describe('asyncForEach', () => {
     const finished = (callback: jest.Mock<any, any>) => {
       callback();
     };
-    
+
     await asyncForEach<TestElement>(
       testArray,
       async (element: TestElement) => {
@@ -106,7 +108,7 @@ describe('asyncForEach', () => {
     type TestElement = {
       sleepTime: number;
     };
-    
+
     const testArray: TestElement[] = [
       { sleepTime: 10 },
       { sleepTime: 20 },
@@ -114,7 +116,7 @@ describe('asyncForEach', () => {
     ];
 
     expect.assertions(1);
-    
+
     await asyncForEach<TestElement>(
       testArray,
       async (element: TestElement) => {
@@ -165,7 +167,7 @@ describe('asyncMap', () => {
       { id: 'b', value: 2, sleepTime: 10 },
       { id: 'c', value: 3, sleepTime: 20 },
     ];
-    
+
     const testOutputIds: string[] = [];
     const testOutput = await asyncMap<TestElement, number>(
       testInput,
@@ -216,7 +218,7 @@ describe('asyncFilter', () => {
       { id: 'b', value: 2, sleepTime: 10 },
       { id: 'c', value: 3, sleepTime: 20 },
     ];
-    
+
     const testOutputIds: string[] = [];
     const testOutput = await asyncFilter<TestElement>(
       testInput,
@@ -268,7 +270,7 @@ describe('asyncReduce', () => {
       { id: 'b', value: 2, sleepTime: 10 },
       { id: 'c', value: 3, sleepTime: 20 },
     ];
-    
+
     const testOutputIds: string[] = [];
     const testOutput = await asyncReduce<TestElement, number>(
       testInput,
@@ -282,5 +284,101 @@ describe('asyncReduce', () => {
 
     expect(testOutput).toEqual<number>(6);
     expect(testOutputIds).toEqual<string[]>(['a', 'b', 'c']);
+  });
+});
+
+describe('asyncFind', () => {
+  it('should find the first element that satisfies the predicate', async () => {
+    type TestElement = {
+      value: number;
+    };
+
+    const testInput: TestElement[] = [
+      { value: 1 },
+      { value: 2 },
+      { value: 3 },
+    ];
+
+    const testOutput: TestElement | undefined = await asyncFind<TestElement>(
+      testInput,
+      async (element: TestElement) => element.value >= 2
+    );
+
+    expect(testOutput).toEqual<TestElement>({ value: 2 });
+  });
+
+  it('should process a list sequentially', async () => {
+    type TestElement = {
+      id: string;
+      value: number;
+      sleepTime: number;
+    };
+
+    const testInput: TestElement[] = [
+      { id: 'a', value: 1, sleepTime: 30 },
+      { id: 'b', value: 2, sleepTime: 10 },
+      { id: 'c', value: 3, sleepTime: 20 },
+    ];
+
+    const testOutputIds: string[] = [];
+    const testOutput = await asyncFind<TestElement>(
+      testInput,
+      async (element: TestElement) => {
+        await sleep(element.sleepTime);
+        testOutputIds.push(element.id);
+        return element.value >= 2;
+      }
+    );
+
+    expect(testOutput).toEqual<TestElement>({ id: 'b', value: 2, sleepTime: 10 });
+    expect(testOutputIds).toEqual<string[]>(['a', 'b']);
+  });
+});
+
+describe('asyncFindIndex', () => {
+  it('should find the index of the first element that satisfies the predicate', async () => {
+    type TestElement = {
+      value: number;
+    };
+
+    const testInput: TestElement[] = [
+      { value: 1 },
+      { value: 2 },
+      { value: 3 },
+    ];
+
+    const testOutput: number = await asyncFindIndex<TestElement>(
+      testInput,
+      async (element: TestElement) => element.value >= 2
+    );
+
+    expect(testOutput).toEqual<number>(1);
+  });
+
+  it('should process a list sequentially', async () => {
+    type TestElement = {
+      id: string;
+      value: number;
+      sleepTime: number;
+    };
+
+    const testInput: TestElement[] = [
+      { id: 'a', value: 1, sleepTime: 30 },
+      { id: 'b', value: 2, sleepTime: 10 },
+      { id: 'c', value: 3, sleepTime: 20 },
+    ];
+
+    const testOutputIds: string[] = [];
+    const testOutput = await asyncFindIndex<TestElement>(
+      testInput,
+      async (element: TestElement) => {
+        await sleep(element.sleepTime);
+        testOutputIds.push(element.id);
+        return element.value >= 2;
+      }
+    );
+
+    expect(testOutput).toEqual<number>(1);
+    expect(testOutputIds).toEqual<string[]>(['a', 'b']);
   });
 });

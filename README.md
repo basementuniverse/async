@@ -107,3 +107,51 @@ const result = await asyncReduce<string, number>(
 result: 6
 */
 ```
+
+---
+
+### asyncFind
+
+```typescript
+import { asyncFind } from '@basementuniverse/async';
+
+const result = await asyncFind<string>(
+  [
+    'one',
+    'two',
+    'three',
+  ],
+  async (value: string) => {
+    // asynchronous stuff here...
+    return value === 'two';
+  }
+);
+
+/*
+result: 'two'
+*/
+```
+
+---
+
+### asyncFindIndex
+
+```typescript
+import { asyncFindIndex } from '@basementuniverse/async';
+
+const result = await asyncFindIndex<string>(
+  [
+    'one',
+    'two',
+    'three',
+  ],
+  async (value: string) => {
+    // asynchronous stuff here...
+    return value === 'two';
+  }
+);
+
+/*
+result: 1
+*/
+```

@@ -13,7 +13,9 @@
     "map",
     "filter",
     "reduce",
-    "forEach"
+    "forEach",
+    "find",
+    "findIndex"
   ],
   "author": "Gordon Larrigan <gordonlarrigan@gmail.com> (https://gordonlarrigan.com)",
   "license": "MIT",

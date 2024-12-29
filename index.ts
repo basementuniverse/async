@@ -60,3 +60,43 @@ export const asyncReduce = async <TIn = any, TOut = any>(
   }
   return result;
 }
+
+/**
+ * Async version of `Array.find`
+ */
+export const asyncFind = async <T = any>(
+  array: T[],
+  predicate: (
+    value: T,
+    index?: number,
+    array?: T[]
+  ) => Promise<boolean>
+): Promise<T | undefined> => {
+  for (const [index, item] of array.entries()) {
+    if (await predicate(item, index, array)) {
+      return item;
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * Async version of `Array.findIndex`
+ */
+export const asyncFindIndex = async <T = any>(
+  array: T[],
+  predicate: (
+    value: T,
+    index?: number,
+    array?: T[]
+  ) => Promise<boolean>
+): Promise<number> => {
+  for (const [index, item] of array.entries()) {
+    if (await predicate(item, index, array)) {
+      return index;
+    }
+  }
+
+  return -1;
+}
